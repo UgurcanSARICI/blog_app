@@ -1,95 +1,166 @@
-import * as React from "react";
-import AppBar from "@mui/material/AppBar";
-import Box from "@mui/material/Box";
-import Toolbar from "@mui/material/Toolbar";
-import Typography from "@mui/material/Typography";
-import IconButton from "@mui/material/IconButton";
-import MenuIcon from "@mui/icons-material/Menu";
-import AccountCircle from "@mui/icons-material/AccountCircle";
-import Switch from "@mui/material/Switch";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import FormGroup from "@mui/material/FormGroup";
-import MenuItem from "@mui/material/MenuItem";
-import Menu from "@mui/material/Menu";
+import React from "react";
+import { useAuth } from "../contexts/AuthContext";
+import { Link, useNavigate } from "react-router-dom";
+import logo from "../assets/logo.png";
+import {
+  AppBar,
+  IconButton,
+  Menu,
+  MenuItem,
+  Toolbar,
+  Typography,
+} from "@mui/material";
+import { AccountCircle } from "@mui/icons-material";
+import { spacing } from "@mui/system";
 
-export default function Navbar() {
-  const [auth, setAuth] = React.useState(true);
+const styles = {
+  grow: {
+    flexGrow: 1,
+  },
+  menuButton: {
+    marginRight: spacing(2),
+  },
+  title: {
+    display: { xs: "none", sm: "block" },
+    fontFamily: "Girassol",
+    "& span": {
+      fontSize: 30,
+      color: "wheat",
+    },
+  },
+  login: {
+    padding: 10,
+    fontSize: 20,
+    color: "white",
+    textDecoration: "none",
+  },
+  register: {
+    fontSize: 20,
+    padding: 10,
+    color: "white",
+    textDecoration: "none",
+  },
+  maxWidthLogReg: {
+    textDecoration: "none",
+    color: "black",
+  },
+  cwImg: {
+    width: 40,
+  },
+  appBar: {
+    backgroundColor: "#046582",
+  },
+  linkStyle: {
+    textDecoration: "none",
+    color: "black",
+  },
+};
+
+export default function PrimarySearchAppBar() {
+  // const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState(null);
+  const { currentUser, logout } = useAuth();
+  const navigate = useNavigate();
 
-  const handleChange = (event) => {
-    setAuth(event.target.checked);
-  };
+  const isMenuOpen = Boolean(anchorEl);
 
-  const handleMenu = (event) => {
+  const handleProfileMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
   };
 
-  const handleClose = () => {
+  const handleMenuClose = () => {
     setAnchorEl(null);
   };
 
+  const handleLogout = () => {
+    handleMenuClose();
+    logout();
+  };
+
+  const handleDashboard = () => {
+    navigate("/");
+  };
+
+  const menuId = "primary-search-account-menu";
+  const renderMenu = (
+    <>
+      {currentUser?.email ? (
+        <Menu
+          anchorEl={anchorEl}
+          anchorOrigin={{ vertical: "top", horizontal: "right" }}
+          id={menuId}
+          keepMounted
+          transformOrigin={{ vertical: "top", horizontal: "right" }}
+          open={isMenuOpen}
+          onClose={handleMenuClose}
+          sx={{ marginTop: "2rem", marginLeft: "1rem" }}
+        >
+          <Link to="/profile" style={styles.linkStyle}>
+            <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
+          </Link>
+          <Link to="/new-blog" style={styles.linkStyle}>
+            <MenuItem onClick={handleMenuClose}>New</MenuItem>
+          </Link>
+          <MenuItem onClick={handleLogout}>Logout</MenuItem>
+        </Menu>
+      ) : (
+        <Menu
+          anchorEl={anchorEl}
+          anchorOrigin={{ vertical: "top", horizontal: "right" }}
+          id={menuId}
+          keepMounted
+          transformOrigin={{ vertical: "top", horizontal: "right" }}
+          open={isMenuOpen}
+          onClose={handleMenuClose}
+          sx={{ marginTop: "2rem", marginLeft: "1.25rem" }}
+        >
+          <Link to="/login" style={styles.linkStyle}>
+            <MenuItem onClick={handleMenuClose}>Login</MenuItem>
+          </Link>
+          <Link to="/register" style={styles.linkStyle}>
+            <MenuItem onClick={handleMenuClose}>Register</MenuItem>
+          </Link>
+        </Menu>
+      )}
+    </>
+  );
+
   return (
-    <Box sx={{ flexGrow: 1 }}>
-      <FormGroup>
-        <FormControlLabel
-          control={
-            <Switch
-              checked={auth}
-              onChange={handleChange}
-              aria-label="login switch"
-            />
-          }
-          label={auth ? "Logout" : "Login"}
-        />
-      </FormGroup>
-      <AppBar position="static">
+    <div style={styles.grow}>
+      <AppBar position="fixed" sx={styles.appBar}>
         <Toolbar>
           <IconButton
-            size="large"
             edge="start"
+            sx={styles.menuButton}
             color="inherit"
-            aria-label="menu"
-            sx={{ mr: 2 }}
+            aria-label="open drawer"
+            onClick={handleDashboard}
           >
-            <MenuIcon />
+            <img src={logo} alt="logo" style={styles.cwImg} />
           </IconButton>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            Photos
-          </Typography>
-          {auth && (
-            <div>
-              <IconButton
-                size="large"
-                aria-label="account of current user"
-                aria-controls="menu-appbar"
-                aria-haspopup="true"
-                onClick={handleMenu}
-                color="inherit"
-              >
-                <AccountCircle />
-              </IconButton>
-              <Menu
-                id="menu-appbar"
-                anchorEl={anchorEl}
-                anchorOrigin={{
-                  vertical: "top",
-                  horizontal: "right",
-                }}
-                keepMounted
-                transformOrigin={{
-                  vertical: "top",
-                  horizontal: "right",
-                }}
-                open={Boolean(anchorEl)}
-                onClose={handleClose}
-              >
-                <MenuItem onClick={handleClose}>Profile</MenuItem>
-                <MenuItem onClick={handleClose}>My account</MenuItem>
-              </Menu>
-            </div>
-          )}
+          <div style={styles.grow} />
+          <Link to="/" style={styles.login}>
+            <Typography sx={styles.title} variant="h6" noWrap>
+              ──── <span>{"<ed8en/>"}</span> Blog ────
+            </Typography>
+          </Link>
+          <div style={styles.grow} />
+          <div>
+            <IconButton
+              edge="end"
+              aria-label="account of current user"
+              aria-controls={menuId}
+              aria-haspopup="true"
+              onClick={handleProfileMenuOpen}
+              color="inherit"
+            >
+              <AccountCircle />
+            </IconButton>
+          </div>
         </Toolbar>
       </AppBar>
-    </Box>
+
+      {renderMenu}
+    </div>
   );
 }
