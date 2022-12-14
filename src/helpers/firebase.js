@@ -1,15 +1,20 @@
 import { initializeApp } from "firebase/app";
-import { getAuth, GoogleAuthProvider } from "firebase/auth";
+import { getAuth } from "firebase/auth";
+import { getDatabase } from "firebase/database";
 
-const app = initializeApp({
-  apiKey: process.env.REACT_APP_FIREBASE_apiKey,
-  authDomain: process.env.REACT_APP_FIREBASE_authDomain,
-  databaseURL: process.env.REACT_APP_FIREBASE_databaseURL,
-  projectId: process.env.REACT_APP_FIREBASE_projectId,
-  storageBucket: process.env.REACT_APP_FIREBASE_storageBucket,
-  messagingSenderId: process.env.REACT_APP_FIREBASE_messagingSenderId,
-  appId: process.env.REACT_APP_FIREBASE_appId,
-});
+const firebaseConfig = {
+  apiKey: process.env.REACT_APP_API_KEY,
+  authDomain: process.env.REACT_APP_AUTH_DOMAIN,
+  projectId: process.env.REACT_APP_PROJECT_ID,
+  storageBucket: process.env.REACT_APP_STORAGE_BUCKET,
+  messagingSenderId: process.env.REACT_APP_MESSAGING_ID,
+  appId: process.env.REACT_APP_API_ID,
+  databaseURL: process.env.REACT_APP_DATABASE,
+};
 
-export const auth = getAuth(app);
-export const googleProvider = new GoogleAuthProvider();
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+export const auth = getAuth();
+export const db = getDatabase(app);
+
+export default app;
