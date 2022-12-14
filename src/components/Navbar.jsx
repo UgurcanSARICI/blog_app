@@ -1,166 +1,202 @@
-import React from "react";
-import { useAuth } from "../contexts/AuthContext";
-import { Link, useNavigate } from "react-router-dom";
+import * as React from "react";
+import AppBar from "@mui/material/AppBar";
+import Box from "@mui/material/Box";
+import Toolbar from "@mui/material/Toolbar";
+import IconButton from "@mui/material/IconButton";
+import Typography from "@mui/material/Typography";
+import Menu from "@mui/material/Menu";
+import MenuIcon from "@mui/icons-material/Menu";
+import Container from "@mui/material/Container";
+import Avatar from "@mui/material/Avatar";
+import Button from "@mui/material/Button";
+import Tooltip from "@mui/material/Tooltip";
+import MenuItem from "@mui/material/MenuItem";
+import AdbIcon from "@mui/icons-material/Adb";
 import logo from "../assets/logo.png";
-import {
-  AppBar,
-  IconButton,
-  Menu,
-  MenuItem,
-  Toolbar,
-  Typography,
-} from "@mui/material";
-import { AccountCircle } from "@mui/icons-material";
-import { spacing } from "@mui/system";
+import { useContext } from "react";
+import { AuthContext } from "../contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
 
-const styles = {
-  grow: {
-    flexGrow: 1,
-  },
-  menuButton: {
-    marginRight: spacing(2),
-  },
-  title: {
-    display: { xs: "none", sm: "block" },
-    fontFamily: "Girassol",
-    "& span": {
-      fontSize: 30,
-      color: "wheat",
-    },
-  },
-  login: {
-    padding: 10,
-    fontSize: 20,
-    color: "white",
-    textDecoration: "none",
-  },
-  register: {
-    fontSize: 20,
-    padding: 10,
-    color: "white",
-    textDecoration: "none",
-  },
-  maxWidthLogReg: {
-    textDecoration: "none",
-    color: "black",
-  },
-  cwImg: {
-    width: 40,
-  },
-  appBar: {
-    backgroundColor: "#046582",
-  },
-  linkStyle: {
-    textDecoration: "none",
-    color: "black",
-  },
-};
+const pages = [
+  <a
+    href="https://ugurcansarici-portfolio.vercel.app/"
+    rel="noopener noreferrer"
+    target="_blank"
+  >
+    website
+  </a>,
+  <a
+    href="https://www.linkedin.com/in/ugurcansarici/"
+    rel="noopener noreferrer"
+    target="_blank"
+  >
+    linkedin
+  </a>,
+  <a
+    href="https://github.com/UgurcanSARICI"
+    rel="noopener noreferrer"
+    target="_blank"
+  >
+    github
+  </a>,
+];
 
-export default function PrimarySearchAppBar() {
-  // const classes = useStyles();
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const { currentUser, logout } = useAuth();
+function ResponsiveAppBar() {
+  const [anchorElNav, setAnchorElNav] = React.useState(null);
+  const [anchorElUser, setAnchorElUser] = React.useState(null);
+
+  const handleOpenNavMenu = (event) => {
+    setAnchorElNav(event.currentTarget);
+  };
+  const handleOpenUserMenu = (event) => {
+    setAnchorElUser(event.currentTarget);
+  };
+  const handleCloseNavMenu = () => {
+    setAnchorElNav(null);
+  };
+
+  const handleCloseUserMenu = () => {
+    setAnchorElUser(null);
+  };
+
+  const { logout, user } = useContext(AuthContext);
+
+  const handleLogout = (e) => {
+    e.preventDefault();
+    logout();
+    window.location.replace("/login");
+  };
   const navigate = useNavigate();
 
-  const isMenuOpen = Boolean(anchorEl);
-
-  const handleProfileMenuOpen = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleMenuClose = () => {
-    setAnchorEl(null);
-  };
-
-  const handleLogout = () => {
-    handleMenuClose();
-    logout();
-  };
-
-  const handleDashboard = () => {
-    navigate("/");
-  };
-
-  const menuId = "primary-search-account-menu";
-  const renderMenu = (
-    <>
-      {currentUser?.email ? (
-        <Menu
-          anchorEl={anchorEl}
-          anchorOrigin={{ vertical: "top", horizontal: "right" }}
-          id={menuId}
-          keepMounted
-          transformOrigin={{ vertical: "top", horizontal: "right" }}
-          open={isMenuOpen}
-          onClose={handleMenuClose}
-          sx={{ marginTop: "2rem", marginLeft: "1rem" }}
-        >
-          <Link to="/profile" style={styles.linkStyle}>
-            <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-          </Link>
-          <Link to="/new-blog" style={styles.linkStyle}>
-            <MenuItem onClick={handleMenuClose}>New</MenuItem>
-          </Link>
-          <MenuItem onClick={handleLogout}>Logout</MenuItem>
-        </Menu>
-      ) : (
-        <Menu
-          anchorEl={anchorEl}
-          anchorOrigin={{ vertical: "top", horizontal: "right" }}
-          id={menuId}
-          keepMounted
-          transformOrigin={{ vertical: "top", horizontal: "right" }}
-          open={isMenuOpen}
-          onClose={handleMenuClose}
-          sx={{ marginTop: "2rem", marginLeft: "1.25rem" }}
-        >
-          <Link to="/login" style={styles.linkStyle}>
-            <MenuItem onClick={handleMenuClose}>Login</MenuItem>
-          </Link>
-          <Link to="/register" style={styles.linkStyle}>
-            <MenuItem onClick={handleMenuClose}>Register</MenuItem>
-          </Link>
-        </Menu>
-      )}
-    </>
-  );
-
   return (
-    <div style={styles.grow}>
-      <AppBar position="fixed" sx={styles.appBar}>
-        <Toolbar>
-          <IconButton
-            edge="start"
-            sx={styles.menuButton}
-            color="inherit"
-            aria-label="open drawer"
-            onClick={handleDashboard}
+    <AppBar position="sticky">
+      <Container maxWidth="2xl">
+        <Toolbar disableGutters>
+          <AdbIcon sx={{ display: { xs: "none", md: "flex" }, mr: 1 }} />
+          <Typography
+            variant="h5"
+            noWrap
+            component="a"
+            href="/"
+            sx={{
+              mr: 8,
+              display: { xs: "none", md: "flex" },
+              fontFamily: "monospace",
+              fontWeight: 700,
+              letterSpacing: ".3rem",
+              color: "inherit",
+              textDecoration: "none",
+            }}
           >
-            <img src={logo} alt="logo" style={styles.cwImg} />
-          </IconButton>
-          <div style={styles.grow} />
-          <Link to="/" style={styles.login}>
-            <Typography sx={styles.title} variant="h6" noWrap>
-              ──── <span>{"<ed8en/>"}</span> Blog ────
-            </Typography>
-          </Link>
-          <div style={styles.grow} />
-          <div>
+            Blog App
+          </Typography>
+
+          <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
             <IconButton
-              edge="end"
+              size="large"
               aria-label="account of current user"
-              aria-controls={menuId}
+              aria-controls="menu-appbar"
               aria-haspopup="true"
-              onClick={handleProfileMenuOpen}
+              onClick={handleOpenNavMenu}
               color="inherit"
             >
-              <AccountCircle />
+              <MenuIcon />
             </IconButton>
-          </div>
-        </Toolbar>
-      </AppBar>
+            <Menu
+              id="menu-appbar"
+              anchorEl={anchorElNav}
+              anchorOrigin={{
+                vertical: "bottom",
+                horizontal: "left",
+              }}
+              keepMounted
+              transformOrigin={{
+                vertical: "top",
+                horizontal: "left",
+              }}
+              open={Boolean(anchorElNav)}
+              onClose={handleCloseNavMenu}
+              sx={{
+                display: { xs: "block", md: "none" },
+              }}
+            >
+              {pages.map((page, idx) => (
+                <MenuItem key={idx} onClick={handleCloseNavMenu}>
+                  <Typography textAlign="center">{page}</Typography>
+                </MenuItem>
+              ))}
+            </Menu>
+          </Box>
+          <AdbIcon sx={{ display: { xs: "flex", md: "none" }, mr: 1 }} />
+          <Typography
+            variant="h5"
+            noWrap
+            component="a"
+            href=""
+            sx={{
+              mr: 2,
+              display: { xs: "flex", md: "none" },
+              flexGrow: 1,
+              fontFamily: "monospace",
+              fontWeight: 700,
+              letterSpacing: ".3rem",
+              color: "inherit",
+              textDecoration: "none",
+            }}
+          >
+            Blog App
+          </Typography>
+          <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
+            {pages.map((page, idx2) => (
+              <Button
+                key={idx2}
+                onClick={handleCloseNavMenu}
+                sx={{ my: 2, color: "white", display: "block" }}
+              >
+                {page}
+              </Button>
+            ))}
+          </Box>
 
-      {renderMenu}
-    </div>
+          <Box sx={{ flexGrow: 0 }}>
+            <Tooltip title="Open settings">
+              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                <Avatar alt="Remy Sharp" src={logo} />
+                <p className="ml-7  capitalize">{user && user.displayName}</p>
+              </IconButton>
+            </Tooltip>
+            <Menu
+              sx={{ mt: "45px" }}
+              id="menu-appbar"
+              anchorEl={anchorElUser}
+              anchorOrigin={{
+                vertical: "top",
+                horizontal: "right",
+              }}
+              keepMounted
+              transformOrigin={{
+                vertical: "top",
+                horizontal: "right",
+              }}
+              open={Boolean(anchorElUser)}
+              onClose={handleCloseUserMenu}
+            >
+              <div className="w-[5rem] p-1 text-left flex flex-col gap-1">
+                <Typography
+                  className="cursor-pointer"
+                  onClick={() => navigate("/new")}
+                >
+                  New Post
+                </Typography>
+                <Typography className="cursor-pointer" onClick={handleLogout}>
+                  Logout
+                </Typography>
+              </div>
+            </Menu>
+          </Box>
+        </Toolbar>
+      </Container>
+    </AppBar>
   );
 }
+export default ResponsiveAppBar;
